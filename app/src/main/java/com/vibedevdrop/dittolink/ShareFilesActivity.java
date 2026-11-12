@@ -1,4 +1,4 @@
-package com.androditto;
+package com.vibedevdrop.dittolink;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -45,30 +45,29 @@ public final class ShareFilesActivity extends Activity {
         root.addView(status);
         setContentView(root);
 
-        var prefs = getSharedPreferences("peer", MODE_PRIVATE);
-        String host = prefs.getString("host", "").trim();
-        String password = prefs.getString("password", "");
-        if (host.isEmpty() || password.isEmpty()) {
-            status.setText("Set the PC Tailscale IP and Ditto password in Ditto Link first.");
-            Button open = new Button(this);
-            open.setText("Open Ditto Link");
-            root.addView(open);
-            open.setOnClickListener(v -> {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            });
-            return;
+        List<PcProfileStore.Profile> profiles = PcProfileStore.getAll(this);
+        if (profiles.isEmpty()) {
+            status.setText("Add a PC in Ditto Link settings first.");
+            Button open = new Button(this); open.setText("Open Ditto Link"); root.addView(open);
+            open.setOnClickListener(v -> { startActivity(new Intent(this, MainActivity.class)); finish(); }); return;
         }
-
         List<Uri> uris = sharedUris(getIntent());
-        if (uris.isEmpty()) {
-            showError("No shareable files were received.");
-            return;
+        if (uris.isEmpty()) { showError("No shareable files were received."); return; }
+        if (profiles.size() == 1) startSending(profiles.get(0), uris);
+        else {
+            String[] labels = new String[profiles.size()];
+            for (int i = 0; i < profiles.size(); i++) labels[i] = profiles.get(i).name + "  ·  " + profiles.get(i).routeSummary();
+            new android.app.AlertDialog.Builder(this).setTitle("Send to PC").setItems(labels, (dialog, which) -> {
+                PcProfileStore.Profile profile = profiles.get(which); PcProfileStore.select(this, profile.id); startSending(profile, uris);
+            }).setOnCancelListener(d -> finish()).show();
         }
-        new Thread(() -> sendFiles(host, password, uris), "DittoLink-share-files").start();
     }
 
-    private void sendFiles(String host, String password, List<Uri> uris) {
+    private void startSending(PcProfileStore.Profile profile, List<Uri> uris) {
+        status.setText("Sending to " + profile.name + "…");
+        new Thread(() -> sendFiles(profile, uris), "DittoLink-share-files").start();
+    }
+    private void sendFiles(PcProfileStore.Profile profile, List<Uri> uris) {
         try {
             var prefs = getSharedPreferences("peer", MODE_PRIVATE);
             File cache = getCacheDir();
@@ -96,11 +95,19 @@ public final class ShareFilesActivity extends Activity {
             while (!ClipboardListenerService.isReady() && System.currentTimeMillis() < deadline) Thread.sleep(100);
             if (!ClipboardListenerService.isReady()) throw new java.io.IOException("Ditto Link could not start its file listener.");
 
-            DittoProtocol.sendFileClip(host, password, MainActivity.tailscaleAddress(), names);
-            for (String name : names) TransferHistory.add(this, "SENT", "FILE", name);
+            String host = DittoProtocol.sendFileClipWithFallback(profile,
+                    route -> MainActivity.phoneAddressFor(profile, route), names);
+            List<String> historyFiles = new ArrayList<>();
+            for (String name : names) historyFiles.add(ReceivedFileProvider.uriForSharedFileName(name).toString());
+            TransferHistory.addFiles(this, "SENT", TransferHistory.fileSummary(names.size()), historyFiles);
             runOnUiThread(() -> {
-                status.setText("Sent " + names.size() + " file(s) to Ditto. The PC can now request their contents.");
-                Toast.makeText(this, "Shared " + names.size() + " file(s) with Ditto", Toast.LENGTH_SHORT).show();
+                String routeNote = MainActivity.isLanRoute(profile, host)
+                        ? " over LAN. PC receipt is unconfirmed; check PC Ditto Friends contains phone IP "
+                                + MainActivity.phoneAddressFor(profile, host) + " if the clip doesn't appear."
+                        : " over Tailscale. PC receipt is unconfirmed.";
+                status.setText("File clip sent to " + profile.name + routeNote);
+                Toast.makeText(this, "File clip sent; PC receipt is unconfirmed." + routeNote,
+                        Toast.LENGTH_LONG).show();
                 new Handler(Looper.getMainLooper()).postDelayed(this::finish, 900);
             });
         } catch (Exception e) {

@@ -1,12 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <package android:name="com.tailscale.ipn" />
+    </queries>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application android:theme="@android:style/Theme.Material.Light.NoActionBar" android:label="Ditto Link"
         android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round"
         android:usesCleartextTraffic="true">
-        <provider android:name=".ReceivedFileProvider" android:authorities="com.androditto.files" android:exported="false" android:grantUriPermissions="true" />
-        <service android:name=".ClipboardListenerService" android:exported="false" />
+        <provider android:name=".ReceivedFileProvider" android:authorities="com.vibedevdrop.dittolink.files" android:exported="false" android:grantUriPermissions="true" />
+        <service android:name=".ClipboardListenerService" android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
         <receiver android:name=".StartListenerOnBoot" android:enabled="true" android:exported="false">
             <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED" /></intent-filter>
         </receiver>

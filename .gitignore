@@ -3,6 +3,8 @@
 .android-sdk/
 **/build/
 local.properties
+signing/
+release/
 *.iml
 .idea/
 
@@ -12,10 +14,9 @@ local.properties
 protocol-harness/
 
 # Local previews and the locally signed development APK
-AndroDitto.apk
-androditto*.png
+DittoLink.apk
 androditt*.png
-androttistory*.png
+dittolink*.png
 swipe-*.png
 icon-options/
 ui-mockups/
