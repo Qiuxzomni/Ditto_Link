@@ -20,12 +20,3 @@ Ditto Link connects an Android phone to [Ditto Clipboard Manager](https://ditto-
 
 Android does not provide a general-purpose file clipboard. Files received from the PC are saved in `Download/Ditto`; use **Share Last** to send one to another phone app.
 
-## Build
-
-Requirements: JDK 17 and Android SDK Platform 36.
-
-```sh
-./gradlew assembleDebug
-```
-
-On Windows, use `gradlew.bat assembleDebug`. The debug APK is generated at `app/build/outputs/apk/debug/app-debug.apk`.
