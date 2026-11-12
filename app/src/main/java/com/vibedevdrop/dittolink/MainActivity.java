@@ -1032,16 +1032,6 @@ public final class MainActivity extends Activity {
         Button setupTailscale = themedButton("SET UP TAILSCALE", CYAN, false);
         LinearLayout.LayoutParams setupLp = matchHeight(dp(42)); setupLp.topMargin = dp(8); box.addView(setupTailscale, setupLp);
         setupTailscale.setOnClickListener(v -> handleTailscaleSetup(null));
-        space(box, 11);
-        TextView version = label("VERSION  " + appVersion(), 10, MUTED, true); box.addView(version);
-        TextView support = label("SUPPORT  ·  VibeCodeDrop@pm.me", 11, CYAN, true);
-        support.setPadding(0, dp(6), 0, dp(2));
-        support.setOnClickListener(v -> {
-            Intent email = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:VibeCodeDrop@pm.me"));
-            email.putExtra(Intent.EXTRA_SUBJECT, "Ditto Link Support");
-            try { startActivity(email); } catch (android.content.ActivityNotFoundException unavailable) { setStatus("No email app is available."); }
-        });
-        box.addView(support);
         LinearLayout infoActions = row();
         Button terms = themedButton("TERMS & CONDITIONS", 0xFF9FB4BC, false);
         Button donate = themedButton("DONATE", AMBER, true);
@@ -1050,9 +1040,24 @@ public final class MainActivity extends Activity {
         infoActions.addView(new View(this), new LinearLayout.LayoutParams(dp(8), 1));
         infoActions.addView(donate, new LinearLayout.LayoutParams(0, dp(42), 1));
         LinearLayout.LayoutParams infoActionsLp = new LinearLayout.LayoutParams(-1, dp(42));
-        infoActionsLp.topMargin = dp(8); box.addView(infoActions, infoActionsLp);
+        infoActionsLp.topMargin = dp(10); box.addView(infoActions, infoActionsLp);
         terms.setOnClickListener(v -> showTermsAndConditions());
         donate.setOnClickListener(v -> openExternalLink("https://ko-fi.com/vibedevdrop"));
+        space(box, 10);
+        TextView version = label("VERSION  " + appVersion(), 10, MUTED, true); box.addView(version);
+        TextView support = label("SUPPORT  ·  VibeCodeDrop@pm.me", 11, CYAN, true);
+        support.setPadding(0, dp(6), 0, dp(1));
+        support.setOnClickListener(v -> {
+            Intent email = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:VibeCodeDrop@pm.me"));
+            email.putExtra(Intent.EXTRA_SUBJECT, "Ditto Link Support");
+            try { startActivity(email); } catch (android.content.ActivityNotFoundException unavailable) { setStatus("No email app is available."); }
+        });
+        box.addView(support);
+        TextView privacy = label("Privacy Policy", 11, CYAN, false);
+        privacy.setPaintFlags(privacy.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        privacy.setPadding(0, dp(2), 0, 0);
+        privacy.setOnClickListener(v -> openExternalLink("https://github.com/Qiuxzomni/Ditto_Link/blob/main/PRIVACY_POLICY.md"));
+        box.addView(privacy);
         Button close = themedButton("CLOSE", 0xFF9FB4BC, false);
         LinearLayout.LayoutParams closeLp = matchHeight(dp(42)); closeLp.topMargin = dp(10); box.addView(close, closeLp);
         close.setOnClickListener(v -> dialog.dismiss());
