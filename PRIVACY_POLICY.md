@@ -1,6 +1,6 @@
 # Ditto Link Privacy Policy
 
-**Effective date: November 12, 2026**  
+**Effective date: November 12, 2026**
 **App version covered: 1.7.9 and later versions unless this policy is replaced**
 
 Ditto Link is an Android companion app for transferring clipboard text and files between your phone and a PC running Ditto Clipboard Manager. This policy explains what the app processes, where it is stored, and who receives it.
@@ -17,7 +17,7 @@ Ditto Link processes information needed to set up and use transfers:
 - **PC connection details.** Saved PC names, local or Tailscale IP addresses, the Ditto network password, and which PC is active. The app encrypts saved passwords using AES-GCM with a key stored in Android Keystore. Other connection details are stored in the app's private storage on your phone.
 - **Transfer history.** The app keeps a local history of up to 100 recent transfers. A text entry can include the transferred text, limited to 4,000 characters per entry. File entries include a label, file name or local file reference, transfer direction, and time. Lifetime sent and received counts are also stored locally.
 - **Files being transferred.** Files selected for sending are temporarily copied into the app's private cache so Ditto can send them. Files received from a PC are saved in `Download/Ditto` where supported by Android. Temporary files may remain in the app cache until Android or the app clears them.
-- **Local network discovery results.** If you tap **Scan LAN**, the app probes reachable IPv4 addresses on the currently connected private Wi-Fi or Ethernet network for a Ditto PC. It displays any responding PC's IP address and an available device name. The scan is initiated by you and is limited to the local network.
+- **Local network discovery results.** If you tap **Scan LAN**, the app probes reachable IPv4 addresses on the currently connected private Wi-Fi or Ethernet network for a Ditto PC. It displays any responding PC's IP address and an available device name; Android's system name resolver may be used to look up that name. The scan is initiated by you and its connection probes are limited to the local network.
 
 If you enable **Background Receive**, the app runs a foreground listener so a configured PC can send content to your phone. Received text is placed on the Android clipboard, and received files are saved on the device. Android may show notifications about the listener or transfer progress.
 
@@ -25,7 +25,7 @@ If you enable **Background Receive**, the app runs a foreground listener so a co
 
 Ditto Link has no user account, cloud storage, or developer-operated server. It does not send transfer contents, connection details, or usage analytics to VibeCodeDrop. The app contains no advertising or analytics SDKs.
 
-When you transfer content, the selected PC receives the content and the connection information needed by Ditto. The app uses Ditto's compatible encrypted transfer format with the Ditto network password. This is not an HTTPS/TLS connection; protect the password and use only PCs and networks you trust. When you use Tailscale, its network service is provided separately by Tailscale and is subject to Tailscale's own privacy terms.
+When you transfer content, the selected PC receives the content and the connection information needed by Ditto, which can include the phone's IP address. The app uses Ditto's compatible encrypted transfer format with the Ditto network password. This is not an HTTPS/TLS connection; protect the password and use only PCs and networks you trust. When you use Tailscale, its network service is provided separately by Tailscale and is subject to Tailscale's own privacy terms.
 
 The app can open third-party services only when you choose an action such as installing Tailscale, opening the Ko-fi donation page, or emailing support. Those services may receive information under their own privacy policies. Ditto Link does not control them.
 

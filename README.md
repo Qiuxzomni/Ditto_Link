@@ -20,3 +20,7 @@ Ditto Link connects an Android phone to [Ditto Clipboard Manager](https://ditto-
 
 Android does not provide a general-purpose file clipboard. Files received from the PC are saved in `Download/Ditto`; use **Share Last** to send one to another phone app.
 
+## Privacy
+
+See the [Ditto Link Privacy Policy](PRIVACY_POLICY.md).
+
